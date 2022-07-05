@@ -31,7 +31,7 @@ import shutil, time, copy
 
 
 #%% Load data
-path_dir = r'H:\Fig3\[p.S3A_11_18_19][s._baseline2][11-18-2019_12-42-55]'
+path_dir = r'D:\OFDIData\Miyuki_temp\[p.CombBurn3]\[p.CombBurn3][s.burn00][05-19-2022_10-10-51]'
 # path_dir = r'H:\Fig4\[p.S4A_12_3_19][s._baseline][12-03-2019_10-15-18]'
 # path_dir = r'H:\C1\[p.C1B_11_12_19][s._C_loc2][11-12-2019_13-21-43]'
 # path_dir = r'H:\D1\[p.C1A_11_5_19][s._baseline][11-05-2019_12-04-37]'
@@ -98,7 +98,7 @@ if b_change_editsetting:
     data.psSettings['maxRet'] = 100
     data.psSettings['binFract'] = data.reconstructionSettings['binFract']
     data.psSettings['thetaOffset'] = 0# -int(151/256*180)
-    data.hsvSettings['maskThresholds'] = np.array([235, 15, 45])
+    data.hsvSettings['maskThresholds'] = np.array([230, 15, 45])
     data.hsvSettings['structWeight'] = np.array([40, 70])
     data.hsvSettings['dopWeight'] = np.array([200, 250])
     data.hsvSettings['retWeight'] = np.array([5, 128])
@@ -165,7 +165,7 @@ for settings_name in list_settings_names:
     temp_dict_copy[settings_name] = copy.deepcopy(getattr(data, settings_name))
     print(f"{settings_name} saved in the temp_dict.")
     
-# sys.exit()
+sys.exit()
 #%% Set up the batch processing
 # path_directory_project = r'H:\Fig3'
 path_directory_project = os.path.split(path_dir)[0]

@@ -39,20 +39,21 @@ import shutil, time
 # path_dir = 'D:\\SPARC-FDA\\SL2\\OS1_D7'
 # path_dir = 'D:\\SPARC-FDA\\Control_nostim\\Ctrl_D1'
 # path_dir = 'D:\\SPARC-FDA\\Control_nostim\\Ctrl_D7'
-path_dir = r'H:\Fig3\[p.S3A_11_18_19][s._baseline2][11-18-2019_12-42-55]'
-path_dir = r'H:\Fig3\[p.S3A_11_18_19][s._baseline2][11-18-2019_12-42-55]'
+# path_dir = r'H:\Fig3\[p.S3A_11_18_19][s._baseline2][11-18-2019_12-42-55]'
+# path_dir = r'H:\Fig3\[p.S3A_11_18_19][s._baseline2][11-18-2019_12-42-55]'
+path_dir = r'D:\OFDIData\user.Ilyas\[p.pig_nh_5mm_pr]\[p.pig_nh_5mm_pr][s.2_prestim_X40_Y20][04-06-2022_10-25-42]'
 
 
-sys.exit()
+# sys.exit()
 b_change_editsetting = True
 data = Load(directory = path_dir)
-data.loadFringe(frame=1300)
+data.loadFringe(frame=512)
 
 #%% Tomogram processing : complex tomogram, k-space fringe, stokes vectors  
-data.reconstructionSettings['processState'] = 'struct+angio+ps+hsv+oa'#'+kspace+stokes'
+data.reconstructionSettings['processState'] = 'struct+angio+ps'#'+hsv+oa'#'+kspace+stokes'
 if b_change_editsetting:
     data.reconstructionSettings['spectralBinning'] = True
-    data.reconstructionSettings['depthIndex'] = [1000,2000] # [1100,1500]#(phantom) # [0, 0]
+    data.reconstructionSettings['depthIndex'] = [750, 1250+12] # [1100,1500]#(phantom) # [0, 0]
     data.reconstructionSettings['binFract'] = 3
     data.reconstructionSettings['demodSet'] = [0.4, 0.0, 1.0, 0.0, 0.0, 0.0]
     
@@ -78,6 +79,7 @@ print("outtom['sv1'].shape >> ", outtom['sv1'].shape)
 if outtom['k1'] is not None:
     print("outtom['k1'].shape >> ", outtom['k1'].shape)
 
+
 #%% Structure processing
 if b_change_editsetting:
     data.structureSettings['contrastLowHigh'] = [0,195]# [-50, 160]
@@ -89,7 +91,22 @@ for key,val in struct_out.items():
 print("struct_out.keys() >> ", struct_out.keys())
 plt.imshow(cp.asnumpy(struct_out['struct']), aspect ='auto', cmap='gray')
 
+# sys.exit()
+#%% Angiography processing
+data.angioSettings['invertGray']=False
 
+angiography = Angiography(mode='cdv')
+aout = angiography.reconstruct(data=data)
+for key,val in aout.items():
+    data.processedData[key] = aout[key]
+    
+fig = plt.figure(figsize=(10,10))
+ax = fig.add_subplot(121)
+ax.imshow(data.processedData['angio'],cmap='gray', aspect='auto')
+ax = fig.add_subplot(122)
+ax.imshow(data.processedData['weight'],cmap='gray', aspect='auto')
+
+# sys.exit()
 #%% PS processing
 if b_change_editsetting:
     data.psSettings['zOffset'] = 5 # this is deltaZ for differential calculation
@@ -136,7 +153,7 @@ if b_change_editsetting:
 else:
     print("Saved edit settings used")
 
-sys.exit()
+# sys.exit()
 #%% Process and save the whole volume
 # Set up logging to print on Spyder console
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
