@@ -31,7 +31,7 @@ import shutil, time, copy
 
 
 #%% Load data
-path_dir = r'D:\OFDIData\Miyuki_temp\[p.CombBurn3]\[p.CombBurn3][s.burn00][05-19-2022_10-10-51]'
+path_dir = r'H:\FigS6\[p.S3B_11_25_19][s._S_loc3][11-25-2019_12-38-31]'
 # path_dir = r'H:\Fig4\[p.S4A_12_3_19][s._baseline][12-03-2019_10-15-18]'
 # path_dir = r'H:\C1\[p.C1B_11_12_19][s._C_loc2][11-12-2019_13-21-43]'
 # path_dir = r'H:\D1\[p.C1A_11_5_19][s._baseline][11-05-2019_12-04-37]'
@@ -133,6 +133,7 @@ SVF1, SVF2, SVN1, SVN2, QUV1, QUV2 = filtNormStokes(data.processedData['sv1'],
                                                     data.processedData['sv2'],
                                                     stokesFilter=ps.filter)
 #%%
+sys.exit()
 processor = Post()
 processed = processor.processFrameRange(data, procState='struct+ps+hsv+oa',#, procAll=True, writeState=True)
                             procAll=False, startFrame=1000, endFrame=1001, writeState=False,
@@ -165,16 +166,18 @@ for settings_name in list_settings_names:
     temp_dict_copy[settings_name] = copy.deepcopy(getattr(data, settings_name))
     print(f"{settings_name} saved in the temp_dict.")
     
-sys.exit()
+# sys.exit()
 #%% Set up the batch processing
 # path_directory_project = r'H:\Fig3'
 path_directory_project = os.path.split(path_dir)[0]
 b_change_editsetting = True
 b_print_log = True
 
-for session_name in os.listdir(path_directory_project):
-    path_dir = os.path.join(path_directory_project, session_name)
-    print(path_dir)
+# for session_name in os.listdir(path_directory_project):
+#     path_dir = os.path.join(path_directory_project, session_name)
+#     print(path_dir)
+if True:
+    path_dir = r'H:\FigS6\[p.S3B_11_25_19][s._S_loc3][11-25-2019_12-38-31]'
     if os.path.isdir(path_dir):
         data = Load(directory = path_dir)
         
@@ -204,7 +207,7 @@ for session_name in os.listdir(path_directory_project):
     
         # Initialize the post processor. 
         processor = Post()
-        processor.processFrameRange(data, procState='struct+ps+hsv+oa',#, procAll=True, writeState=True)
-                                    procAll=False, startFrame=1, endFrame=500, writeState=True)
+        processor.processFrameRange(data, procState='struct+ps+stokes+oa',#, procAll=True, writeState=True)
+                                    procAll=False, startFrame=1, endFrame=1200, writeState=True)
     else:
         print("Path to a hidden file not a directory")
