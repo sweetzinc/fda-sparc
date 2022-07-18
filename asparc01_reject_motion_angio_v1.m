@@ -17,9 +17,9 @@ directory = 'D:\OFDIData\user.Ilyas\[p.pig_nh_5mm_pr]\[p.pig_nh_5mm_pr][s.2_pres
 % original dataset parameters
     scanInfo = loadScanInfo(directory);
     aqSettings = loadAqSettings(directory);
-        nZpixels = aqSettings.nSamples; %aqSettings.zPixels;
+        nZpixels = aqSettings.zPixels;
         nAlinesToProcTomo = scanInfo.nAlinesToProcTomo;
-        nFrames = scanInfo.nFrames;
+        nFrames0 = scanInfo.nFrames;
         imgWidth = scanInfo.imgWidthStr;
         nMeasurements = scanInfo.imgDepthStr;
     nSegments = 4;
@@ -36,7 +36,8 @@ nPairs = numel(pairA);
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % set parameters
-slices = 512; %1:nFrames;                                                                                                                                                  
+nFrames = nFrames0;
+slices = 1:nFrames;                                                                                                                                                  
 measurements = 1:nMeasurements;
 segments = 1:nSegments;
 
@@ -44,8 +45,8 @@ cBlack = 0.3;
 cPairs = 3;
 haveScatFiles = sum(getPath4namestr(directory, [num2str(nFrames), '].scatxX.mgh']))>1; % already have full volume scatX and scatY
 monitorFalg = ~(numel(slices)>1);
-monitorAllPairs = true;
-writeVolume =(length(slices)==nFrames);
+monitorAllPairs = false;%true;%
+writeVolume = (length(slices)==nFrames);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 tomoOpt.flipUpDown = true;
@@ -111,7 +112,7 @@ blackRatio = zeros(nPairs, nSegments);
         absZsumVol(:,:,iPair) = absZsumFrame;
         
         if monitorAllPairs % monitor all differential pairs
-        figure(11); subplot(7,3,iPair);
+        figure(11);  subplot(5,2,iPair); %subplot(7,3,iPair);
         imagesc(angioTemp, [0 1]); %colormap('gray'); 
         colorbar;
         title(mat2str([iFrame, iPair, nPairs]));
@@ -144,7 +145,8 @@ pairsArray = zeros(length(slices), 1+cPairs*nSegments);
     if monitorFalg % monitor surface detection
         
         angioReadOpt.iFrame = iFrame;
-        angioBefore = readMgh(getPath4namestr(directory,'angiography8.mgh'),angioReadOpt);
+%         angioBefore = readMgh(getPath4namestr(directory,'angiography8.mgh'),angioReadOpt);
+        angioBefore = readMgh(getPath4namestr(directory,'ofdiANGIOGRAPHY.mgh'),angioReadOpt);
         figure(12); 
         subplot(2,1,1); imagesc(angioBefore/255, [0 1]); colorbar; 
         title(['BEFORE, iFrame = ', num2str(iFrame)]);
